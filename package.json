@@ -1,0 +1,23 @@
+{
+  "name": "agricola-final",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/material": "^5.15.19",
+    "@stomp/stompjs": "^7.0.0",
+    "next": "14.2.3",
+    "react": "^18",
+    "react-dom": "^18",
+    "socket.io-client": "^4.7.5",
+    "sockjs-client": "^1.6.1",
+    "stompjs": "^2.3.3"
+  }
+}
