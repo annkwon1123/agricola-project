@@ -26,12 +26,10 @@ import { useCardId, useCardType, usePlayer } from '../component/Context';
 import { usePlayerList, usePlayerId } from '../component/Context';
 import { usePlayerPostions } from '../component/ReceiveContext';
 
-function GamePage() {
+function GamePage({ currentPlayer }) {
 
   const [stompClient, setStompClient] = useState(null);
   const [gameState, setGameState] = useState('');
-
-  const currentPlayer = 1; // 게임하는 사람 (멀티플레이어 기능)
 
   const { clickedPlayer, setClickedPlayer } = usePlayer(); // 프로필을 클릭한 사람
   const { cardId, setCardId } = useCardId();
@@ -78,8 +76,7 @@ function GamePage() {
 
         client.subscribe(`/topic/room/1`, (message) => {
           console.log('Received card options: ' + message.body);
-          handleGameState(JSON.parse(message.body));
-          handleCardOptions(JSON.parse(message.body));
+          handleGameState2(JSON.parse(message.body));
         });
 
         setStompClient(client);
@@ -89,6 +86,7 @@ function GamePage() {
     client.activate();
   };
 
+  // 초기화 정보 보내는 함수
   const startGame = () => {
     if (stompClient) {
       const payload = {
@@ -102,9 +100,10 @@ function GamePage() {
     }
   };
 
+  // 선택한 카드 정보 보내는 함수
   const selectCard = (cardId) => {
     if (stompClient) {
-      const payload = { currentPlayer: clickedPlayer, cardNumber: cardId };
+      const payload = { currentPlayer: currentPlayer, cardNumber: cardId };
       console.log('Selecting card with ID:', cardId);
       stompClient.publish({ destination: '/app/room/1/actionCardClick', body: JSON.stringify(payload) });
     } else {
@@ -112,22 +111,29 @@ function GamePage() {
     }
   };
 
-  const sendCardId = () => {
-    if (cardId) {
-      selectCard(cardId);
-    } else {
-      alert('Please enter a card ID');
-    }
-  };
-
-  // 액션 카드 반영
+  // 현재 차례인 플레이어와 가능한 액션 카드 칸 정보 받아오는 함수
   const handleGameState = (message) => {
-    console.log('Game state updated:', message);
-    if (message.clickedActionCards) {
-      setClickedActionCards(message.clickedActionCards);
+    if (message.playerId) {
+      console.log('현재 차례인 플레이어 정보', message.playerId);
+      setPlayerId(message.playerId);
+    }
+    if (message.availableCards) {
+      console.log('가능한 액션 카드 칸', message.availableCards);
     }
   };
 
+  // 클릭된 액션 카드 칸 정보 받아오는 함수
+  const handleGameState2 = (message) => {
+    if (message.playerPositions) {
+      console.log('플레이어 포지션', message.playerPositions);
+      setClickedActionCards(message.playerPositions.slice(0, 14));
+      setClickedRoundCards(message.playerPositions.slice(14));
+      console.log('액션 보드 플레이어 포지션', clickedActionCards);
+      console.log('라운드 보드 플레이어 포지션', clickedRoundCards);
+    }
+  };
+
+  // ** 액션 카드 / 보드
   // 0: 사람없음, 1~4: 플레이어 -> 14개 카드
   const initialClickedActionCards = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   const [clickedActionCards, setClickedActionCards] = useState(initialClickedActionCards);
@@ -136,12 +142,15 @@ function GamePage() {
   const initialResourceActionCards = [,2,1,,1,,1,,,,,1,1,1,,];
   const [resourceActionCards, setResourceActionCards] = useState(initialResourceActionCards);
 
-  const handleCardClick = (cardNumber) => {
+  // 액션 카드 클릭시 
+  const handleActionCardClick = (cardNumber) => {
+    selectCard(cardNumber);
     const newClickedActionCards = [...clickedActionCards];
     newClickedActionCards[cardNumber - 1] = currentPlayer;
     setClickedActionCards(newClickedActionCards);
   };
 
+  // ** 라운드 카드 / 보드
   // 0: 사람없음, 1~4: 플레이어 -> 6개 카드
   const initialClickedRoundCards = [2, 1, 3, 4, 0, 0];
   const [clickedRoundCards, setClickedRoundCards] = useState(initialClickedRoundCards);
@@ -154,21 +163,19 @@ function GamePage() {
   const initialIsBackRoundCards = [1, 1, 1, 1, 1, 0];
   const [isBackRoundCards, setIsBackRoundCards] = useState(initialIsBackRoundCards);
 
-  const handleRoundCard = (cardNumber) => {
+  // 라운드 카드 클릭시
+  const handleRoundCardClick = (cardNumber) => {
+    selectCard(cardNumber);
     const newClickedRoundCards = [...clickedRoundCards];
     newClickedRoundCards[cardNumber - 1] = currentPlayer;
     setClickedRoundCards(newClickedRoundCards);
   };
 
+  // ** 주요 설비 카드 / 보드
+  // 주요 설비 카드 팝업창 관리
   const [open, setOpen] = React.useState(false);
-
-  const handleClick = () => {
-    setOpen(true);
-  }; 
-
-  const handleClose = (value) => {
-    setOpen(false);
-  };
+  const handleClick = () => { setOpen(true); }; 
+  const handleClose = () => { setOpen(false); };
 
   return (
       <Grid 
@@ -178,7 +185,6 @@ function GamePage() {
         alignItems="center"
         >
            <button id="startGameButton" onClick={startGame}>Start Game</button>
-           <button id="sendCardIdButton" onClick={sendCardId}>Send Card ID</button>
            <button onClick={handleClick}>
             ChoiceCard
             <DialogChoiceCard
@@ -229,7 +235,7 @@ function GamePage() {
           }}
         >
           <Grid container spacing={1}>
-            <CurrentBoard currentPlayer={currentPlayer} />
+            <CurrentBoard currentPlayer={currentPlayer} turnPlayer={playerId}/>
           </Grid>
         </Box>
         <Box
@@ -245,14 +251,14 @@ function GamePage() {
         <Grid container spacing={1} >
           <ActionBoard 
             currentPlayer={currentPlayer} 
-            onClick={() => handleCardClick()}
+            onClick={(cardNumber) => handleActionCardClick(cardNumber)}
             clickedActionCards={clickedActionCards}
             resourceActionCards={resourceActionCards}
             
           />
           <RoundBoard 
             currentPlayer={currentPlayer} 
-            onClick={() => handleRoundCard()}
+            onClick={(cardNumber) => handleRoundCardClick(cardNumber)}
             clickedRoundCards={clickedRoundCards}
             resourceRoundCards={resourceRoundCards}
             isBackRoundCards={isBackRoundCards}

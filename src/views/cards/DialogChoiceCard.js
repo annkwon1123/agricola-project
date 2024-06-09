@@ -63,7 +63,6 @@ function DialogChoiceCard(props) {
         alignItems="center"
         gap={4}
         p={2}
-        sx={{ border: '2px solid grey' }}
       >
         {count.map((index) => (
           <ChoiceCard
