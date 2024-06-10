@@ -110,7 +110,7 @@ export default function Room() {
     );
   };
 
-//   게임이 시작되지 않았을 때 대기 화면
+  // 게임이 시작되지 않았을 때 대기 화면
   // if (!isGameStarted) {
   //   return (
   //     <div>
