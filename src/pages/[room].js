@@ -111,14 +111,14 @@ export default function Room() {
   };
 
 //   게임이 시작되지 않았을 때 대기 화면
-  if (!isGameStarted) {
-    return (
-      <div>
-        <h1>플레이어 대기 중...</h1>
-        <p>4명의 플레이어가 게임에 참가할 때까지 기다리고 있습니다.</p>
-      </div>
-    );
-  }
+  // if (!isGameStarted) {
+  //   return (
+  //     <div>
+  //       <h1>플레이어 대기 중...</h1>
+  //       <p>4명의 플레이어가 게임에 참가할 때까지 기다리고 있습니다.</p>
+  //     </div>
+  //   );
+  // }
 
   // 경로에 따라 다른 화면을 렌더링
   switch (path) {
