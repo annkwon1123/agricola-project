@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 
 import ActionCard from '../cards/ActionCard';
+import DialogChoiceCard from '../cards/DialogChoiceCard';
 
 // 컨텍스트 불러오기
 import { useCardId, useCardType } from '../../component/Context';
@@ -26,6 +27,10 @@ export default function ActionBoard({ currentPlayer, onClick, clickedActionCards
     }
   };
 
+  const [open, setOpen] = React.useState(false);
+  const handleClick = () => { setOpen(true); }; 
+  const handleClose = () => { setOpen(false); };
+
   return (
     <Box
       height={420}
@@ -36,7 +41,13 @@ export default function ActionBoard({ currentPlayer, onClick, clickedActionCards
       p={2}
       sx={{ m: 0 }}
     >
-      
+      <DialogChoiceCard
+        cardNumber={cardId}
+        choiceType={"AndOr"}
+        open={open}
+        onClose={handleClose}
+        currentPlayer={currentPlayer}
+      />
       <Grid container spacing={{ xs: 2, md: 3 }} columns={5}>
         {clickedActionCards.map((playerNumber, index) => (
           <Grid item xs={3} sm={1} md={1} key={index}>

@@ -7,6 +7,7 @@ import { Client } from '@stomp/stompjs';
 // MUI 불러오기
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
 
 // 보드판 불러오기
@@ -19,7 +20,6 @@ import PersonalBoard from './boards/PersonalBoard';
 import OwnBoard from './boards/OwnBoard';
 import TriggerBoard from './boards/TriggerBoard';
 import MajorPopUp from './MajorPopUp';
-import DialogChoiceCard from './cards/DialogChoiceCard';
 
 // 컨텍스트 불러오기
 import { useCardId, useCardType, usePlayer } from '../component/Context';
@@ -184,18 +184,6 @@ function GamePage({ currentPlayer }) {
         justifyContent="center"
         alignItems="center"
         >
-           <button id="startGameButton" onClick={startGame}>Start Game</button>
-           <button onClick={handleClick}>
-            ChoiceCard
-            <DialogChoiceCard
-                cardNumber={cardId}
-                choiceType={"AndOr"}
-                open={open}
-                onClose={handleClose}
-                currentPlayer={currentPlayer}
-            />
-            </button>
-           <pre>{JSON.stringify(clickedActionCards, null, 2)}</pre>
         <Box
           height={1010}
           width={120}
@@ -210,6 +198,7 @@ function GamePage({ currentPlayer }) {
           }}
         >
           <Grid container spacing={1}>
+          <Button id="startGameButton" onClick={startGame}>Start Game</Button>
             <Typography>플레이어 프로필 클릭시 개인보드와 자원보드가 변경됩니다.</Typography>
             <ProfileCard playerNumber={1}  isFirstPlayer={true}/>
             <Typography>고도희</Typography>

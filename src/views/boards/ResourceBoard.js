@@ -72,6 +72,7 @@ const ResourceBoard = ({ playerNumber }) => {
                 key={resource.name}
                 name={resource.name}
                 count={resource.count}
+                playerNumber={playerNumber}
               />
             ))}
           </div>
