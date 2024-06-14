@@ -1,4 +1,4 @@
-import React, { useState, useRef  } from 'react';
+import React, { useState } from 'react';
 
 // MUI 불러오기
 import Box from '@mui/material/Box';
@@ -6,23 +6,31 @@ import Grid from '@mui/material/Grid';
 
 import RoundCard from '../cards/RoundCard'
 
-// 컨텍스트 불러오기
-import { useCardId, useCardType } from '../../component/Context';
+export default function RoundBoard({ currentPlayer, onClick }) {
 
-export default function RoundBoard({ currentPlayer, onClick, clickedRoundCards, resourceRoundCards, isBackRoundCards }) {
+  // ** 라운드 카드 / 보드
+  // 0: 사람없음, 1~4: 플레이어 -> 6개 카드
+  const initialClickedRoundCards = [2, 1, 3, 4, 0, 0];
+  const [clickedRoundCards, setClickedRoundCards] = useState(initialClickedRoundCards);
   
-  const { cardId, setCardId } = useCardId();
-  const { cardType, setCardType } = useCardType();
+  // 자원누적이 필요한 카드: 3 번
+  const initialResourceRoundCards = [,,,1,,,];
+  const [resourceRoundCards, setResourceRoundCards] = useState(initialResourceRoundCards);
+
+  // 앞면이면 0, 뒷면이면 1
+  const initialIsBackRoundCards = [0,0,0,0,0,1];
+  const [isBackRoundCards, setIsBackRoundCards] = useState(initialIsBackRoundCards);
 
   const handleCardClick = (cardNumber) => {
     console.log(`${currentPlayer}번 플레이어가 라운드카드 ${cardNumber}번을 클릭했습니다.`);
 
-    setCardId(cardNumber);
-    setCardType('round');
-    
     if (typeof onClick === 'function') {
       onClick(cardNumber, currentPlayer);
     }
+
+    const newClickedRoundCards = [...clickedRoundCards];
+    newClickedRoundCards[cardNumber - 1] = currentPlayer;
+    setClickedRoundCards(newClickedRoundCards);
   };
 
   return (

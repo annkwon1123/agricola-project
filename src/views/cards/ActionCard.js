@@ -1,18 +1,32 @@
 import React, { useState } from 'react';
+
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import CardActionArea from '@mui/material/CardActionArea';
 import Typography from '@mui/material/Typography'; 
 
+import { useCardId, useCardType } from '../../component/Context';
+import DialogChoiceCard from '../cards/DialogChoiceCard';
+
 export default function ActionCard({ playerNumber, cardNumber, resource, onClick }) {
   
+  const { cardId, setCardId } = useCardId();
+  const { cardType, setCardType } = useCardType();
+
   // 카드가 클릭된 상태
-  const [isClicked, setIsClicked] = useState(playerNumber !== null && playerNumber != 0);
+  const [isClicked, setIsClicked] = useState(playerNumber !== null);
 
   const handleClick = () => {
     if (typeof onClick === 'function') {
       onClick(cardNumber);
     }
+
+    setCardId(cardNumber);
+    setCardType('action');
+
+    if(cardNumber == 7 || cardNumber == 8) {
+      setOpen(true); 
+    } 
   };
 
   const handleCardHover = (event) => {
@@ -29,12 +43,21 @@ export default function ActionCard({ playerNumber, cardNumber, resource, onClick
     card.style.boxShadow = 'none';
   };
 
+  const [open, setOpen] = useState(false);
+  const handleClose = () => { setOpen(false); };
+
   const cardClass = `action ${cardNumber} ${isClicked ? 'Y' : 'N'} `;
   const imagePath = `../../image/ActionCard/action${cardNumber}.png`;
   const coverImagePath = playerNumber ? `../../image/ClickedCard/clicked-action${playerNumber}.png` : null;
 
   return (
     <div>
+      <DialogChoiceCard
+        cardType={cardType}
+        cardNumber={cardId}
+        open={open}
+        onClose={handleClose}
+      />
       <Card
         sx={{ maxWidth: 130, borderRadius: 2 }}
         onMouseEnter={handleCardHover}

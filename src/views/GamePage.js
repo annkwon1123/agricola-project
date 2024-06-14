@@ -133,42 +133,14 @@ function GamePage({ currentPlayer }) {
     }
   };
 
-  // ** 액션 카드 / 보드
-  // 0: 사람없음, 1~4: 플레이어 -> 14개 카드
-  const initialClickedActionCards = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  const [clickedActionCards, setClickedActionCards] = useState(initialClickedActionCards);
-  
-  // 자원누적이 필요한 카드: 1,2,4,6,11,12,13 번
-  const initialResourceActionCards = [,2,1,,1,,1,,,,,1,1,1,,];
-  const [resourceActionCards, setResourceActionCards] = useState(initialResourceActionCards);
-
   // 액션 카드 클릭시 
   const handleActionCardClick = (cardNumber) => {
     selectCard(cardNumber);
-    const newClickedActionCards = [...clickedActionCards];
-    newClickedActionCards[cardNumber - 1] = currentPlayer;
-    setClickedActionCards(newClickedActionCards);
   };
-
-  // ** 라운드 카드 / 보드
-  // 0: 사람없음, 1~4: 플레이어 -> 6개 카드
-  const initialClickedRoundCards = [2, 1, 3, 4, 0, 0];
-  const [clickedRoundCards, setClickedRoundCards] = useState(initialClickedRoundCards);
-  
-  // 자원누적이 필요한 카드: 3 번
-  const initialResourceRoundCards = [,,,1,,,];
-  const [resourceRoundCards, setResourceRoundCards] = useState(initialResourceRoundCards);
-
-  // 뒷면이면 0, 앞면이면 1
-  const initialIsBackRoundCards = [1, 1, 1, 1, 1, 0];
-  const [isBackRoundCards, setIsBackRoundCards] = useState(initialIsBackRoundCards);
 
   // 라운드 카드 클릭시
   const handleRoundCardClick = (cardNumber) => {
     selectCard(cardNumber);
-    const newClickedRoundCards = [...clickedRoundCards];
-    newClickedRoundCards[cardNumber - 1] = currentPlayer;
-    setClickedRoundCards(newClickedRoundCards);
   };
 
   // ** 주요 설비 카드 / 보드
@@ -241,16 +213,10 @@ function GamePage({ currentPlayer }) {
           <ActionBoard 
             currentPlayer={currentPlayer} 
             onClick={(cardNumber) => handleActionCardClick(cardNumber)}
-            clickedActionCards={clickedActionCards}
-            resourceActionCards={resourceActionCards}
-            
           />
           <RoundBoard 
             currentPlayer={currentPlayer} 
             onClick={(cardNumber) => handleRoundCardClick(cardNumber)}
-            clickedRoundCards={clickedRoundCards}
-            resourceRoundCards={resourceRoundCards}
-            isBackRoundCards={isBackRoundCards}
           />
         </Grid>
 

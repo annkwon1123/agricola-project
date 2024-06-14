@@ -6,25 +6,16 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 import ChoiceCard from './ChoiceCard';
 
-// 컨텍스트 불러오기
-import { useCardId, useCardType } from '../../component/Context';
-
 function DialogChoiceCard(props) {
   const { cardNumber, choiceType, options, open, onClose, currentPlayer } = props;
 
-  const { cardId, setCardId } = useCardId();
-  const { cardType, setCardType } = useCardType();
-
-  const choice = true;
   const [cardName, setCardName] = useState('');
   const [count, setCount] = useState([]);
 
-  // 카드 클릭시 백엔드에게 메시지 전송
   const handleCardClick = (index) => {
     console.log(`${currentPlayer}번 플레이어가 추가선택카드 ${cardNumber}-${index}번을 클릭했습니다.`);
 
-    setCardId(index);
-    setCardType('choice');
+    onClose();
   };
 
   useEffect(() => {
@@ -49,12 +40,8 @@ function DialogChoiceCard(props) {
     }
   }, [cardNumber]);
 
-  const handleClose = () => {
-    onClose();
-  };
-
   return (
-    <Dialog onClose={handleClose} open={open}>
+    <Dialog open={open}>
       <DialogTitle>{cardName}</DialogTitle>
       <Box
         mx={2}
